@@ -101,10 +101,10 @@
     data.submittedAt = new Date().toISOString();
     data.event = "Hitesh and Neha wedding — 12 November 2026";
 
-    // If an Apps Script Web App URL is configured, save directly to Google Sheets:
+    // If an endpoint is configured, send the RSVP:
     if (config.rsvpEndpoint && config.rsvpEndpoint.startsWith("http")) {
       submitButton.disabled = true;
-      setStatus("Saving your RSVP to Google Sheets…");
+      setStatus("Sending your RSVP…");
       try {
         await fetch(config.rsvpEndpoint, {
           method: "POST",
@@ -116,22 +116,18 @@
         syncGuestCount();
         setStatus(data.attendance === "declined"
           ? "Thank you for letting us know — you will be missed."
-          : "Your RSVP has been saved! We look forward to celebrating with you.", "success");
+          : "Your RSVP has been received! We look forward to celebrating with you.", "success");
       } catch (error) {
-        console.error("RSVP save failed", error);
-        setStatus("We could not save your RSVP. Please check your connection or contact the families directly.", "error");
+        console.error("RSVP submission error", error);
+        setStatus("We could not send your RSVP. Please check your connection and try again, or contact the families directly.", "error");
       } finally {
         submitButton.disabled = false;
       }
       return;
     }
 
-    // Fallback if Apps Script Web App URL is not yet pasted in config.js:
-    if (config.googleSheetUrl) {
-      window.open(config.googleSheetUrl, "_blank");
-    }
     form.reset();
     syncGuestCount();
-    setStatus("Thank you! To enable 1-click automatic background recording to your Google Sheet, add your Google Apps Script Web App URL to assets/config.js.", "success");
+    setStatus("Thank you! Your RSVP has been received.", "success");
   });
 })();
