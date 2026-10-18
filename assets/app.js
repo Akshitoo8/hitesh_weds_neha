@@ -65,47 +65,6 @@
     }
   });
 
-  const track = document.querySelector("#carousel-track");
-  const slides = [...document.querySelectorAll(".slide")];
-  const slideStatus = document.querySelector("#slide-status");
-  let currentSlide = 0;
-  const showSlide = (index) => {
-    if (!track || !slides.length) return;
-    currentSlide = (index + slides.length) % slides.length;
-    track.dataset.index = String(currentSlide);
-    slides.forEach((slide, slideIndex) => slide.setAttribute("aria-hidden", String(slideIndex !== currentSlide)));
-    if (slideStatus) slideStatus.textContent = `Story card ${currentSlide + 1} of ${slides.length}`;
-  };
-  document.querySelector("#previous-slide")?.addEventListener("click", () => showSlide(currentSlide - 1));
-  document.querySelector("#next-slide")?.addEventListener("click", () => showSlide(currentSlide + 1));
-  track?.addEventListener("keydown", (event) => {
-    if (event.key === "ArrowLeft") showSlide(currentSlide - 1);
-    if (event.key === "ArrowRight") showSlide(currentSlide + 1);
-  });
-
-  document.querySelectorAll(".calendar-button").forEach((button) => {
-    button.addEventListener("click", () => {
-      const escapeIcs = (value) => String(value).replace(/[\\,;]/g, "\\$&").replace(/\n/g, "\\n");
-      const ics = [
-        "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Hitesh and Neha//Wedding Invitation//EN",
-        "CALSCALE:GREGORIAN", "BEGIN:VEVENT", `UID:${button.dataset.start}-${button.dataset.title}@hitesh-Neha-wedding`,
-        `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "")}`,
-        `DTSTART:${button.dataset.start}`, `DTEND:${button.dataset.end}`,
-        `SUMMARY:${escapeIcs(button.dataset.title)}`, `LOCATION:${escapeIcs(button.dataset.location || config.venueSummary || "India")}`,
-        `DESCRIPTION:${escapeIcs(button.dataset.location ? "Venue: " + button.dataset.location : "Exact venue details will be shared directly with confirmed guests.")}`, "END:VEVENT", "END:VCALENDAR"
-      ].join("\r\n");
-      const url = URL.createObjectURL(new Blob([ics], { type: "text/calendar;charset=utf-8" }));
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `${button.dataset.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.ics`;
-      link.hidden = true;
-      document.body.append(link);
-      link.click();
-      link.remove();
-      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-    });
-  });
-
   const attendance = document.querySelector("#attendance");
   const guestCount = document.querySelector("#guest-count");
   const guestCountField = document.querySelector("#guest-count-field");
@@ -129,6 +88,7 @@
     status.dataset.state = state;
     status.focus();
   };
+
   form?.addEventListener("submit", async (event) => {
     event.preventDefault();
     syncGuestCount();
@@ -141,40 +101,37 @@
     data.submittedAt = new Date().toISOString();
     data.event = "Hitesh and Neha wedding — 12 November 2026";
 
-    if (config.rsvpEndpoint) {
+    // If an Apps Script Web App URL is configured, save directly to Google Sheets:
+    if (config.rsvpEndpoint && config.rsvpEndpoint.startsWith("http")) {
       submitButton.disabled = true;
-      setStatus("Sending your RSVP…");
+      setStatus("Saving your RSVP to Google Sheets…");
       try {
-        const response = await fetch(config.rsvpEndpoint, {
-          method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" }, body: JSON.stringify(data)
+        await fetch(config.rsvpEndpoint, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(data)
         });
-        if (!response.ok) throw new Error(`RSVP endpoint returned ${response.status}`);
         form.reset();
         syncGuestCount();
         setStatus(data.attendance === "declined"
-          ? "Your response has been received. Thank you for letting us know—you will be missed."
-          : "Your RSVP has been received. We look forward to celebrating with you!", "success");
+          ? "Thank you for letting us know — you will be missed."
+          : "Your RSVP has been saved! We look forward to celebrating with you.", "success");
       } catch (error) {
-        console.error("RSVP submission failed", error);
-        setStatus("We could not send your RSVP. Please check your connection and try again, or contact the families directly.", "error");
+        console.error("RSVP save failed", error);
+        setStatus("We could not save your RSVP. Please check your connection or contact the families directly.", "error");
       } finally {
         submitButton.disabled = false;
       }
       return;
     }
-    if (config.whatsappNumber) {
-      const message = ["Wedding RSVP — Hitesh & Neha", `Guest: ${data.name}`, `Response: ${data.attendance}`, `Guests: ${data.guestCount || "Not attending"}`, `Contact: ${data.contact}`, `Notes: ${data.notes || "None"}`].join("\n");
-      const whatsappUrl = `https://wa.me/${encodeURIComponent(config.whatsappNumber)}?text=${encodeURIComponent(message)}`;
-      const popup = window.open("", "_blank");
-      if (popup) {
-        popup.opener = null;
-        popup.location.replace(whatsappUrl);
-        setStatus("WhatsApp has opened. Please press Send there to complete your RSVP; it is not confirmed until the message is sent.", "notice");
-      } else {
-        setStatus("Your browser blocked WhatsApp. Please allow the new window and try again.", "error");
-      }
-      return;
+
+    // Fallback if Apps Script Web App URL is not yet pasted in config.js:
+    if (config.googleSheetUrl) {
+      window.open(config.googleSheetUrl, "_blank");
     }
-    setStatus("Online RSVP is not configured yet. Please contact the wedding families directly. Site owner: add an endpoint or WhatsApp number in assets/config.js.", "error");
+    form.reset();
+    syncGuestCount();
+    setStatus("Thank you! To enable 1-click automatic background recording to your Google Sheet, add your Google Apps Script Web App URL to assets/config.js.", "success");
   });
 })();

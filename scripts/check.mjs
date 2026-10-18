@@ -41,7 +41,8 @@ if (releaseMode) {
   const config = readFileSync(join(root, "assets/config.js"), "utf8");
   const hasEndpoint = /rsvpEndpoint:\s*"https:\/\/.+"/.test(config);
   const hasWhatsApp = /whatsappNumber:\s*"\d{8,15}"/.test(config);
-  assert(hasEndpoint || hasWhatsApp, "Release requires an HTTPS RSVP endpoint or a valid WhatsApp number in assets/config.js");
+  const hasGoogleSheet = /googleSheetUrl:\s*"https:\/\/.+"/.test(config);
+  assert(hasEndpoint || hasWhatsApp || hasGoogleSheet, "Release requires an RSVP endpoint, WhatsApp number, or Google Sheets link in assets/config.js");
   assert(!/property="og:image" content="assets\//.test(html), "Release requires an absolute public Open Graph image URL");
 }
 
