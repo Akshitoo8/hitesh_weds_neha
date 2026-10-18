@@ -1,6 +1,6 @@
 # Hitesh & Neha — wedding invitation
 
-A privacy-conscious, dependency-free wedding invitation for 12–13 November 2026 in Baddi.
+A privacy-conscious, dependency-free wedding invitation for 12–13 November 2026 in Baddi, Himachal Pradesh.
 
 ## Local preview
 
