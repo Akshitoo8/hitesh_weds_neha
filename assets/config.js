@@ -4,5 +4,5 @@ window.WEDDING_CONFIG = Object.freeze({
   rsvpEndpoint: "",
   // Fallback: digits only, including country code. Example: "919999999999".
   whatsappNumber: "",
-  venueSummary: "Hyderabad, India"
+  venueSummary: "Baddi, India"
 });

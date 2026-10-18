@@ -87,11 +87,11 @@
     button.addEventListener("click", () => {
       const escapeIcs = (value) => String(value).replace(/[\\,;]/g, "\\$&").replace(/\n/g, "\\n");
       const ics = [
-        "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Hitesh and Nehya//Wedding Invitation//EN",
-        "CALSCALE:GREGORIAN", "BEGIN:VEVENT", `UID:${button.dataset.start}-${button.dataset.title}@hitesh-nehya-wedding`,
+        "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Hitesh and Neha//Wedding Invitation//EN",
+        "CALSCALE:GREGORIAN", "BEGIN:VEVENT", `UID:${button.dataset.start}-${button.dataset.title}@hitesh-Neha-wedding`,
         `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "")}`,
         `DTSTART:${button.dataset.start}`, `DTEND:${button.dataset.end}`,
-        `SUMMARY:${escapeIcs(button.dataset.title)}`, `LOCATION:${escapeIcs(config.venueSummary || "Hyderabad, India")}`,
+        `SUMMARY:${escapeIcs(button.dataset.title)}`, `LOCATION:${escapeIcs(config.venueSummary || "Baddi, India")}`,
         "DESCRIPTION:Exact venue details will be shared directly with confirmed guests.", "END:VEVENT", "END:VCALENDAR"
       ].join("\r\n");
       const url = URL.createObjectURL(new Blob([ics], { type: "text/calendar;charset=utf-8" }));
@@ -139,7 +139,7 @@
     }
     const data = Object.fromEntries(new FormData(form).entries());
     data.submittedAt = new Date().toISOString();
-    data.event = "Hitesh and Nehya wedding — 24 October 2026";
+    data.event = "Hitesh and Neha wedding — 12 November 2026";
 
     if (config.rsvpEndpoint) {
       submitButton.disabled = true;
@@ -163,7 +163,7 @@
       return;
     }
     if (config.whatsappNumber) {
-      const message = ["Wedding RSVP — Hitesh & Nehya", `Guest: ${data.name}`, `Response: ${data.attendance}`, `Guests: ${data.guestCount || "Not attending"}`, `Contact: ${data.contact}`, `Notes: ${data.notes || "None"}`].join("\n");
+      const message = ["Wedding RSVP — Hitesh & Neha", `Guest: ${data.name}`, `Response: ${data.attendance}`, `Guests: ${data.guestCount || "Not attending"}`, `Contact: ${data.contact}`, `Notes: ${data.notes || "None"}`].join("\n");
       const whatsappUrl = `https://wa.me/${encodeURIComponent(config.whatsappNumber)}?text=${encodeURIComponent(message)}`;
       const popup = window.open("", "_blank");
       if (popup) {

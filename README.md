@@ -1,6 +1,6 @@
-# Hitesh & Nehya — wedding invitation
+# Hitesh & Neha — wedding invitation
 
-A privacy-conscious, dependency-free wedding invitation for 23–25 October 2026 in Hyderabad.
+A privacy-conscious, dependency-free wedding invitation for 12–13 November 2026 in Baddi.
 
 ## Local preview
 
