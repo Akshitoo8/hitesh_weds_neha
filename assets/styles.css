@@ -76,14 +76,15 @@ button { cursor: pointer; }
 .countdown__message { text-align: center; font-size: 1.35rem; }
 
 .events { background: #eee7da; }
-.event-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
-.event-card { padding: clamp(2rem, 5vw, 3rem); text-align: center; background: var(--paper); border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(52,45,31,.05); }
-.event-card--wide { grid-column: 1 / -1; width: calc(50% - .75rem); justify-self: center; }
+.event-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; align-items: stretch; }
+.event-card { display: flex; flex-direction: column; justify-content: space-between; padding: clamp(2rem, 5vw, 3rem); text-align: center; background: var(--paper); border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(52,45,31,.05); }
 .event-card h3 { margin: .1rem 0; color: var(--deep); font-size: 1.85rem; }
 .event-card__devanagari { margin: 0; color: var(--gold-dark); font-size: 1.2rem; }
 .event-card__mood { margin: .1rem 0 1.4rem; color: var(--sage); font-size: 1.25rem; font-style: italic; }
 .event-card time { font: 650 .8rem var(--sans); letter-spacing: .08em; text-transform: uppercase; }
-.text-button { padding: .55rem .25rem; color: var(--gold-dark); background: transparent; border: 0; border-bottom: 1px solid var(--gold-dark); font: 650 .78rem var(--sans); letter-spacing: .08em; text-transform: uppercase; }
+.event-card__venue { margin: .85rem 0 .4rem; font: 600 .92rem var(--sans); color: var(--deep); line-height: 1.45; }
+.event-card__actions { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-top: 1.25rem; }
+.text-button { display: inline-block; text-decoration: none; padding: .55rem .25rem; color: var(--gold-dark); background: transparent; border: 0; border-bottom: 1px solid var(--gold-dark); font: 650 .78rem var(--sans); letter-spacing: .08em; text-transform: uppercase; }
 .venue-note { max-width: 680px; margin: 3rem auto 0; padding: 1.5rem 2rem; text-align: center; color: #fff; background: var(--deep); }
 .venue-note h3 { margin: 0; font-size: 1.35rem; }
 .venue-note p { margin-bottom: 0; }
@@ -146,7 +147,6 @@ button { cursor: pointer; }
   .families { grid-template-columns: 1fr; gap: 1.5rem; }
   .families__mark { transform: rotate(90deg); }
   .event-grid { grid-template-columns: 1fr; }
-  .event-card--wide { grid-column: auto; width: auto; }
   .slide { grid-template-columns: 1fr; }
   .slide > div { min-height: 14rem; }
   .guide-grid article { grid-template-columns: 1fr; gap: .25rem; }

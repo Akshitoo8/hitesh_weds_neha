@@ -91,8 +91,8 @@
         "CALSCALE:GREGORIAN", "BEGIN:VEVENT", `UID:${button.dataset.start}-${button.dataset.title}@hitesh-Neha-wedding`,
         `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "")}`,
         `DTSTART:${button.dataset.start}`, `DTEND:${button.dataset.end}`,
-        `SUMMARY:${escapeIcs(button.dataset.title)}`, `LOCATION:${escapeIcs(config.venueSummary || "Baddi, India")}`,
-        "DESCRIPTION:Exact venue details will be shared directly with confirmed guests.", "END:VEVENT", "END:VCALENDAR"
+        `SUMMARY:${escapeIcs(button.dataset.title)}`, `LOCATION:${escapeIcs(button.dataset.location || config.venueSummary || "India")}`,
+        `DESCRIPTION:${escapeIcs(button.dataset.location ? "Venue: " + button.dataset.location : "Exact venue details will be shared directly with confirmed guests.")}`, "END:VEVENT", "END:VCALENDAR"
       ].join("\r\n");
       const url = URL.createObjectURL(new Blob([ics], { type: "text/calendar;charset=utf-8" }));
       const link = document.createElement("a");
